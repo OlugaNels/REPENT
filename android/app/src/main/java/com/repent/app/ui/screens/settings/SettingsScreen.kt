@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -32,16 +33,16 @@ fun SettingsScreen(onNavigateToHelp: () -> Unit) {
     val viewModel = remember { SettingsViewModel(app.authRepository, app.serverRepository) }
     val user by app.sessionManager.userFlow.collectAsState(initial = null)
 
-    var name by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var address by remember { mutableStateOf("") }
-    var city by remember { mutableStateOf("") }
-    var postal by remember { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
+    var phone by rememberSaveable { mutableStateOf("") }
+    var address by rememberSaveable { mutableStateOf("") }
+    var city by rememberSaveable { mutableStateOf("") }
+    var postal by rememberSaveable { mutableStateOf("") }
     var category by remember { mutableStateOf("all") }
-    var filled by remember { mutableStateOf(false) }
+    var filled by rememberSaveable { mutableStateOf(false) }
 
     // Fill the form once from the saved profile (and again only if a different person signs in).
-    var filledFor by remember { mutableStateOf<Int?>(null) }
+    var filledFor by rememberSaveable { mutableStateOf<Int?>(null) }
     LaunchedEffect(user?.id) {
         val u = user
         if (u != null && filledFor != u.id) {

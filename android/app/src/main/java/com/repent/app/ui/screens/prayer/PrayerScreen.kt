@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,11 +25,11 @@ fun PrayerScreen() {
     val scope = rememberCoroutineScope()
     val user by app.sessionManager.userFlow.collectAsState(initial = null)
 
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var subject by remember { mutableStateOf("") }
-    var prayer by remember { mutableStateOf("") }
-    var isPrivate by remember { mutableStateOf(false) }
+    var name by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var subject by rememberSaveable { mutableStateOf("") }
+    var prayer by rememberSaveable { mutableStateOf("") }
+    var isPrivate by rememberSaveable { mutableStateOf(false) }
     var isSubmitting by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var nameError by remember { mutableStateOf<String?>(null) }

@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import com.repent.app.data.model.Product
 import com.repent.app.data.repository.ApiResult
+import com.repent.app.ui.components.ErrorState
 import com.repent.app.ui.components.LoadingState
 import com.repent.app.ui.components.ProductCard
 import com.repent.app.ui.components.SectionLabel
@@ -36,11 +37,15 @@ fun HomeScreen(
     val app = rememberRepentApp()
     var featured by remember { mutableStateOf<List<Product>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
+    var loadError by remember { mutableStateOf<String?>(null) }
+    var reloadKey by remember { mutableStateOf(0) }
 
-    LaunchedEffect(Unit) {
+    // Re-runs when the user taps Retry, so a server that was briefly down does not leave the page empty.
+    LaunchedEffect(reloadKey) {
+        loading = true
         when (val result = app.productRepository.getProducts("all")) {
-            is ApiResult.Success -> featured = result.data.take(6)
-            is ApiResult.Failure -> Unit
+            is ApiResult.Success -> { featured = result.data.take(6); loadError = null }
+            is ApiResult.Failure -> loadError = result.message
         }
         loading = false
     }
@@ -106,6 +111,8 @@ fun HomeScreen(
 
             if (loading) {
                 LoadingState()
+            } else if (loadError != null) {
+                ErrorState(loadError ?: "Could not load products.", onRetry = { reloadKey++ })
             } else {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(featured) { product ->

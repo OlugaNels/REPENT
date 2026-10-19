@@ -21,6 +21,7 @@ import com.repent.app.ui.components.productImageUrl
 import com.repent.app.ui.rememberRepentApp
 import com.repent.app.ui.theme.RepentGray
 import com.repent.app.ui.theme.RepentGreen
+import com.repent.app.util.Pricing
 
 @Composable
 fun CartScreen(
@@ -62,7 +63,7 @@ fun CartScreen(
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
                         Text(item.name, fontWeight = FontWeight.Medium, maxLines = 1)
-                        Text("R${item.price.toInt()} each", color = RepentGray, style = MaterialTheme.typography.bodyMedium)
+                        Text("${Pricing.rand(item.price)} each", color = RepentGray, style = MaterialTheme.typography.bodyMedium)
                         Spacer(Modifier.height(6.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             OutlinedButton(
@@ -82,7 +83,7 @@ fun CartScreen(
                         }
                     }
                     Column(horizontalAlignment = Alignment.End) {
-                        Text("R${item.lineTotal.toInt()}", fontWeight = FontWeight.SemiBold)
+                        Text(Pricing.rand(item.lineTotal), fontWeight = FontWeight.SemiBold)
                         IconButton(onClick = { viewModel.remove(item.productId) }) {
                             Icon(Icons.Default.Close, contentDescription = "Remove", tint = RepentGray)
                         }
@@ -96,22 +97,22 @@ fun CartScreen(
         Column(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
         ) {
-            SummaryLine("Subtotal", "R${subtotal.toInt()}")
+            SummaryLine("Subtotal", Pricing.rand(subtotal))
             SummaryLine(
                 "Shipping",
-                if (shipping == 0.0) "FREE" else "R${shipping.toInt()}",
+                if (shipping == 0.0) "FREE" else Pricing.rand(shipping),
                 valueColor = if (shipping == 0.0) RepentGreen else null,
             )
             if (shipping > 0) {
                 Text(
-                    "Add R${(800 - subtotal).toInt()} more for free shipping",
+                    "Add ${Pricing.rand(Pricing.FREE_SHIPPING_FROM - subtotal)} more for free shipping",
                     color = RepentGray,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(bottom = 8.dp),
                 )
             }
             Divider(modifier = Modifier.padding(vertical = 8.dp))
-            SummaryLine("Total", "R${total.toInt()}", bold = true)
+            SummaryLine("Total", Pricing.rand(total), bold = true)
 
             Spacer(Modifier.height(12.dp))
             GoldButton(

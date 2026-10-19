@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: repent
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health.php
+    envVars:
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_NAME
+        value: repent_db
+      - key: DB_SSL
+        value: "1"
+      - key: REPENT_APP_SECRET
+        generateValue: true
+      - key: GOOGLE_WEB_CLIENT_ID
+        sync: false

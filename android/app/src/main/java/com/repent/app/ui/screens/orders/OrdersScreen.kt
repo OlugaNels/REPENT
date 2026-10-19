@@ -1,5 +1,6 @@
 package com.repent.app.ui.screens.orders
 
+import com.repent.app.util.Pricing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,7 +27,12 @@ fun OrdersScreen() {
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(Unit) {
+    var reloadKey by remember { mutableStateOf(0) }
+
+    // Re-runs when the user taps Retry after a failed load.
+    LaunchedEffect(reloadKey) {
+        loading = true
+        error = null
         when (val result = app.orderRepository.getMyOrders()) {
             is ApiResult.Success -> orders = result.data
             is ApiResult.Failure -> error = result.message
@@ -36,7 +42,7 @@ fun OrdersScreen() {
 
     when {
         loading -> LoadingState()
-        error != null -> ErrorState(error ?: "Could not load your orders.")
+        error != null -> ErrorState(error ?: "Could not load your orders.", onRetry = { reloadKey++ })
         orders.isEmpty() -> EmptyState("📦", "No orders yet", "Your order history will appear here.")
         else -> LazyColumn(Modifier.fillMaxSize().padding(16.dp)) {
             items(orders, key = { it.id }) { order ->
@@ -58,7 +64,7 @@ fun OrdersScreen() {
                         Text("${item.productName} × ${item.quantity}", style = MaterialTheme.typography.bodyMedium)
                     }
                     Spacer(Modifier.height(8.dp))
-                    Text("Total: R${order.total.toInt()}", fontWeight = FontWeight.SemiBold)
+                    Text("Total: ${Pricing.rand(order.total)}", fontWeight = FontWeight.SemiBold)
                 }
             }
         }

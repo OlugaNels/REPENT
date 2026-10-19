@@ -24,6 +24,7 @@ import com.repent.app.ui.theme.RepentBlack
 import com.repent.app.ui.theme.RepentGold
 import com.repent.app.ui.theme.RepentGray
 import com.repent.app.ui.theme.RepentWhite
+import com.repent.app.util.Pricing
 
 /** Builds the full image URL from a product's `image` filename, served by the PHP app itself. */
 fun productImageUrl(image: String?): String {
@@ -147,7 +148,8 @@ fun ProductCard(
                 model = productImageUrl(product.image),
                 contentDescription = product.name,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                // A soft grey block shows while the photo loads (or if it cannot be loaded).
+                modifier = Modifier.fillMaxWidth().aspectRatio(1f).background(RepentGray.copy(alpha = 0.15f)),
             )
             if (!product.badge.isNullOrBlank()) {
                 Box(
@@ -166,18 +168,19 @@ fun ProductCard(
             Text(product.name, style = MaterialTheme.typography.titleMedium, maxLines = 1)
             Spacer(Modifier.height(4.dp))
             Text(
-                "R${product.price.toInt()}",
+                Pricing.rand(product.price),
                 color = RepentBlack,
                 fontWeight = FontWeight.SemiBold,
             )
             Spacer(Modifier.height(8.dp))
             OutlinedButton(
                 onClick = onAddToCart,
+                enabled = product.stock > 0,
                 modifier = Modifier.fillMaxWidth().height(36.dp),
                 shape = RoundedCornerShape(4.dp),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = RepentBlack),
             ) {
-                Text("Add to Cart", fontSize = 12.sp)
+                Text(if (product.stock > 0) "Add to Cart" else "Sold out", fontSize = 12.sp)
             }
         }
     }
