@@ -1,0 +1,71 @@
+name: CI
+
+# Runs on every push and pull request: builds the Android app, runs its unit tests,
+# then tests the PHP API against a real MySQL database.
+on:
+  push:
+  pull_request:
+
+jobs:
+  android:
+    name: Android build + unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Unit tests
+        working-directory: android
+        run: ./gradlew testDebugUnitTest --stacktrace
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --stacktrace
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-test-reports
+          path: android/app/build/reports/tests/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repent-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+
+  api:
+    name: PHP API + MySQL tests
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot" --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASS: root
+      DB_NAME: repent_db
+      REPENT_APP_SECRET: ci-secret-ci-secret-ci-secret-ci-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mysqli, mbstring, curl
+      - name: PHP syntax check
+        run: |
+          find . -name "*.php" -not -path "./android/*" -print0 | xargs -0 -n1 php -l | grep -v "^No syntax errors" || true
+          ! find . -name "*.php" -not -path "./android/*" -print0 | xargs -0 -n1 php -l 2>&1 | grep -q "Parse error"
+      - name: Load database (schema + sample data)
+        run: mysql -h 127.0.0.1 -uroot -proot < repent_database.sql
+      - name: Database integrity tests (10+ rows per table, totals, foreign keys)
+        run: php tests/db_integrity_test.php
+      - name: API tests
+        run: |
+          php -S 127.0.0.1:8000 > server.log 2>&1 &
+          sleep 2
+          php tests/api_test.php http://127.0.0.1:8000

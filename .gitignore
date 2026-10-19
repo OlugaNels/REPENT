@@ -1,0 +1,10 @@
+# secrets and machine-specific settings
+includes/config.local.php
+includes/app_secret.key
+android/local.properties
+# build output
+android/.gradle/
+android/build/
+android/app/build/
+.idea/
+*.sqlite

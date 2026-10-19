@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Allows plain HTTP during development against a local PHP server
+  (e.g. `php -S localhost:8000`, reached from the emulator as
+  10.0.2.2). Once your API is deployed behind HTTPS, you can remove
+  this file and the usesCleartextTraffic flag in the manifest.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

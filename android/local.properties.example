@@ -1,0 +1,12 @@
+## Copy this file to local.properties (same folder) and edit. local.properties is not committed to git.
+## Android Studio adds the sdk.dir line itself.
+
+# Address of the computer running the website/API, as seen from the device. Must end with /
+#  - XAMPP (recommended):  http://192.168.0.10/Repent/
+#  - php -S 0.0.0.0:8000:  http://192.168.0.10:8000/
+#  - Android emulator:     http://10.0.2.2/Repent/
+# You can also change it later inside the app: Profile > Settings > Server connection.
+BASE_URL=http://192.168.0.10/Repent/
+
+# Google "Web application" OAuth client ID (README, section 4). Leave empty to skip Google sign-in.
+GOOGLE_WEB_CLIENT_ID=
