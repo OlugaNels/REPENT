@@ -26,7 +26,7 @@ class ShopViewModel(private val repository: ProductRepository) : ViewModel() {
         fetch()
     }
 
-    fun setCategory(newCategory: String) {
+    fun selectCategory(newCategory: String) {
         category = newCategory
         fetch()
     }

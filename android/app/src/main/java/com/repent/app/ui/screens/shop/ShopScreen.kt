@@ -45,7 +45,7 @@ fun ShopScreen(
             categories.forEach { (value, label) ->
                 FilterChip(
                     selected = viewModel.category == value,
-                    onClick = { viewModel.setCategory(value) },
+                    onClick = { viewModel.selectCategory(value) },
                     label = { Text(label) },
                 )
             }
@@ -55,7 +55,7 @@ fun ShopScreen(
             viewModel.isLoading -> LoadingState()
             viewModel.errorMessage != null -> ErrorState(
                 viewModel.errorMessage ?: "Something went wrong.",
-                onRetry = { viewModel.setCategory(viewModel.category) },
+                onRetry = { viewModel.selectCategory(viewModel.category) },
             )
             viewModel.products.isEmpty() -> ErrorState("No products found in this category.")
             else -> LazyVerticalGrid(
