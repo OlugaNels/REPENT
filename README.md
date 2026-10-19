@@ -1,5 +1,14 @@
 # REPENT† — website + Android app + API + database
 
+[![CI](https://github.com/OlugaNels/REPENT/actions/workflows/ci.yml/badge.svg)](https://github.com/OlugaNels/REPENT/actions/workflows/ci.yml)
+![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
+![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat-square&logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+
+A shop with an Android app, a website and a PHP REST API on one shared database. Customers can browse products, use a cart, check out and see their orders, with devotional, prayer and newsletter features alongside. Sign-in works with email and password (bcrypt) or Google, on both the app and the website. The repo includes Docker and Render hosting files (see `docs/HOSTING.md`) and automated tests.
+
 One repository, four parts that share **one MySQL database**:
 
 | Folder / file | What it is |
