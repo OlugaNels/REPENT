@@ -3,6 +3,7 @@ package com.repent.app.ui.navigation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Person
@@ -288,6 +289,6 @@ fun RepentNavHost(navController: NavHostController) {
 @Composable
 private fun BackIcon(navController: NavHostController) {
     IconButton(onClick = { navController.popBackStack() }) {
-        Icon(androidx.compose.material.icons.Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
     }
 }
