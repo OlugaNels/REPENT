@@ -40,6 +40,9 @@ fun ProfileScreen(
                 GoldButton(text = "Login / Create Account", onClick = onNavigateToLogin)
                 Spacer(Modifier.height(12.dp))
                 OutlineDarkButton(text = "Help & Documentation", onClick = onNavigateToHelp)
+                Spacer(Modifier.height(12.dp))
+                // Lets a signed-out user point the app at the right server (otherwise they could never sign in).
+                OutlineDarkButton(text = "Server settings", onClick = onNavigateToSettings)
             }
         } else {
             Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {

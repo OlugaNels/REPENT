@@ -1,6 +1,7 @@
 package com.repent.app.ui.screens.admin
 
 import androidx.compose.foundation.background
+import com.repent.app.util.Pricing
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -136,7 +137,7 @@ private fun AdminOrdersTab() {
                         Text("#${order.id} — ${order.customer}", fontWeight = FontWeight.Medium)
                         Text(order.status.replaceFirstChar { it.uppercase() }, color = RepentGold)
                     }
-                    Text("R${order.total.toInt()}", fontWeight = FontWeight.SemiBold)
+                    Text(Pricing.rand(order.total), fontWeight = FontWeight.SemiBold)
                 }
                 Divider()
             }

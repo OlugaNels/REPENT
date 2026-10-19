@@ -16,6 +16,9 @@ define_if_missing('DB_HOST', repent_setting('DB_HOST', 'localhost'));
 define_if_missing('DB_USER', repent_setting('DB_USER', 'root'));
 define_if_missing('DB_PASS', repent_setting('DB_PASS', ''));
 define_if_missing('DB_NAME', repent_setting('DB_NAME', 'repent_db'));
+// Online hosts (e.g. Aiven) use a non-default port and require an encrypted connection.
+define_if_missing('DB_PORT', repent_setting('DB_PORT', '3306'));
+define_if_missing('DB_SSL', repent_setting('DB_SSL', '0'));
 
 function define_if_missing(string $name, string $value): void {
     if (!defined($name)) define($name, $value);
@@ -31,7 +34,15 @@ if (!empty($GLOBALS['REPENT_TEST_CONN'])) {
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 try {
-    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+    $conn = mysqli_init();
+    $flags = 0;
+    if (DB_SSL === '1') {
+        // Encrypt the connection without pinning a CA file (the host's certificate is not verified).
+        $conn->options(MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+        $conn->ssl_set(null, null, null, null, null);
+        $flags = MYSQLI_CLIENT_SSL;
+    }
+    $conn->real_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, (int)DB_PORT, null, $flags);
     $conn->set_charset('utf8mb4');
 } catch (Throwable $e) {
     $conn = null;

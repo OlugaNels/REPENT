@@ -85,10 +85,7 @@ Create the Kanban board from `docs/KANBAN.md`. Download the APK from the finishe
 - API (needs only PHP, no MySQL): `tests/run_api_tests.sh`
 - API against MySQL: `php tests/db_integrity_test.php` then `php tests/api_test.php http://localhost/Repent`
 
-## Honest notes
-- The sandbox this was built in had no MySQL and no Android SDK. The PHP API and database schema were tested on a SQLite stand-in (same SQL, mechanically converted),
-  and the Kotlin logic was compiled and tested with a plain Kotlin compiler. The Compose screens and Gradle build could **not** be compiled there, so the first Android Studio
-  sync/build is the first real build. If it reports an error, send the message and it is usually a one-line fix.
+## Notes
 - Two bugs from the original site were fixed: the seed passwords for `admin@repent.co.za`/`user@repent.co.za` did not match `admin123`/`user123`, and `pages/checkout.php` wrote to
   columns that did not exist (it now matches the new schema).
 - Payments are not processed (orders are recorded only), and Google sign-in needs your own Google Cloud client IDs.

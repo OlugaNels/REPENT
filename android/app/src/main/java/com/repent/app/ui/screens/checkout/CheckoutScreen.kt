@@ -6,6 +6,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -32,10 +33,10 @@ fun CheckoutScreen(
     val shipping = Pricing.shipping(subtotal)
     val total = Pricing.total(subtotal)
 
-    var address by remember { mutableStateOf("") }
-    var city by remember { mutableStateOf("") }
-    var postalCode by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
+    var address by rememberSaveable { mutableStateOf("") }
+    var city by rememberSaveable { mutableStateOf("") }
+    var postalCode by rememberSaveable { mutableStateOf("") }
+    var phone by rememberSaveable { mutableStateOf("") }
     var paymentMethod by remember { mutableStateOf("eft") }
 
     // Start from the delivery details saved in Settings (only fills empty boxes, never overwrites typing).

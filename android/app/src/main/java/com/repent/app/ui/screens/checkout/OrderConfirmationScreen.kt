@@ -1,5 +1,6 @@
 package com.repent.app.ui.screens.checkout
 
+import com.repent.app.util.Pricing
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,7 +36,7 @@ fun OrderConfirmationScreen(
         )
         Spacer(Modifier.height(20.dp))
         Text("Order #$orderId", fontWeight = FontWeight.SemiBold)
-        Text("Total paid: R${total.toInt()}", fontWeight = FontWeight.SemiBold)
+        Text("Total paid: ${Pricing.rand(total)}", fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(32.dp))
         GoldButton(text = "View My Orders", onClick = onViewOrders)
         Spacer(Modifier.height(12.dp))

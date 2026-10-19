@@ -26,7 +26,12 @@ fun DevotionalScreen() {
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(Unit) {
+    var reloadKey by remember { mutableStateOf(0) }
+
+    // Re-runs when the user taps Retry after a failed load.
+    LaunchedEffect(reloadKey) {
+        loading = true
+        error = null
         when (val result = app.devotionalRepository.getDevotionals()) {
             is ApiResult.Success -> devotionals = result.data
             is ApiResult.Failure -> error = result.message
@@ -36,7 +41,7 @@ fun DevotionalScreen() {
 
     when {
         loading -> LoadingState()
-        error != null -> ErrorState(error ?: "Could not load devotionals.")
+        error != null -> ErrorState(error ?: "Could not load devotionals.", onRetry = { reloadKey++ })
         else -> LazyColumn(Modifier.fillMaxSize().padding(16.dp)) {
             items(devotionals, key = { it.id }) { d ->
                 Column(

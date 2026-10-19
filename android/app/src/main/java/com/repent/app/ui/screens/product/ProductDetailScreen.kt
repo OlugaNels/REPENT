@@ -1,8 +1,8 @@
 package com.repent.app.ui.screens.product
 
+import com.repent.app.util.Pricing
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,10 +28,12 @@ fun ProductDetailScreen(
     val app = rememberRepentApp()
     var product by remember { mutableStateOf<Product?>(null) }
     var error by remember { mutableStateOf<String?>(null) }
-    var selectedSize by remember { mutableStateOf("M") }
     var addedMessage by remember { mutableStateOf(false) }
+    var reloadKey by remember { mutableStateOf(0) }
 
-    LaunchedEffect(productId) {
+    // Re-runs when the user taps Retry after a failed load.
+    LaunchedEffect(productId, reloadKey) {
+        error = null
         when (val result = app.productRepository.getProduct(productId)) {
             is ApiResult.Success -> product = result.data
             is ApiResult.Failure -> error = result.message
@@ -39,7 +41,7 @@ fun ProductDetailScreen(
     }
 
     when {
-        error != null -> ErrorState(error ?: "Could not load product.")
+        error != null -> ErrorState(error ?: "Could not load product.", onRetry = { reloadKey++ })
         product == null -> LoadingState()
         else -> {
             val p = product!!
@@ -58,7 +60,7 @@ fun ProductDetailScreen(
                     Text(p.name, style = MaterialTheme.typography.headlineMedium)
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "R${p.price.toInt()}",
+                        Pricing.rand(p.price),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -68,29 +70,8 @@ fun ProductDetailScreen(
                         Spacer(Modifier.height(20.dp))
                     }
 
-                    Text("Size", style = MaterialTheme.typography.titleMedium)
-                    Spacer(Modifier.height(8.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        listOf("S", "M", "L", "XL").forEach { size ->
-                            val selected = size == selectedSize
-                            OutlinedButton(
-                                onClick = { selectedSize = size },
-                                shape = RoundedCornerShape(4.dp),
-                                colors = if (selected) {
-                                    ButtonDefaults.outlinedButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                                    )
-                                } else {
-                                    ButtonDefaults.outlinedButtonColors()
-                                },
-                            ) { Text(size) }
-                        }
-                    }
-
-                    Spacer(Modifier.height(12.dp))
                     Text(
-                        "${p.stock} in stock",
+                        if (p.stock > 0) "${p.stock} in stock" else "Sold out",
                         style = MaterialTheme.typography.bodyMedium,
                     )
 
@@ -99,7 +80,7 @@ fun ProductDetailScreen(
                         Text("✓ Added to your cart!", color = RepentGold, modifier = Modifier.padding(bottom = 8.dp))
                     }
                     GoldButton(
-                        text = "Add to Cart",
+                        text = if (p.stock > 0) "Add to Cart" else "Sold out",
                         enabled = p.stock > 0,
                         onClick = {
                             onAddToCart(p)
